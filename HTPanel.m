@@ -13,8 +13,9 @@ classdef HTPanel < HTComponent
             obj=obj@HTComponent(state);
             obj.host=uipanel(parent);
             obj.components=gobjects(obj.count,1);
+            temp=fieldnames(state.components);
             for i = 1:obj.count
-                switch lower(obj.state{2,2}{i,1})
+                switch lower(obj.state.components.(temp{i}).class)
                     case 'dropdown'
                         obj.components(i,1) = uidropdown(obj.host);
                     case 'listbox'
@@ -22,13 +23,18 @@ classdef HTPanel < HTComponent
                     case 'modify'
                         obj.components(i,1) = uislider(obj.host);
                 end
-                for j=1:size(obj.state{2,2}{i,2}{1,2},1)
-                    set(obj.components(i,1),obj.state{2,2}{i,2}{1,2}{j,1},obj.state{2,2}{i,2}{1,2}{j,2});
+                tempi=fieldnames(obj.state.components.(temp{i}).properties);
+                for j=1:size(tempi,1)
+                    set(obj.components(i,1),tempi{j},obj.state.components.(temp{i}).properties.(tempi{j}));
                 end
             end
-            for i =1:size(obj.state{1,2}{1,2},1)
-                set(obj.host,obj.state{1,2}{1,2}{i,1},obj.state{1,2}{1,2}{i,2});
-            end            
+            temp=fieldnames(obj.state.properties);
+            for i = 1:size(obj.host,1)
+                tempi=fieldnames(obj.state.properties.(temp{i}));
+                for j = 1:size(tempi,1)
+                    set(obj.host(i,1),tempi{j},obj.state.properties.(temp{i}).(tempi{j}));
+                end
+            end
         end
         
         function outputArg = method1(obj,inputArg)

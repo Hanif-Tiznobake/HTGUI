@@ -14,17 +14,18 @@ classdef HTGUI < HTComponent
             obj.host(1,1)=uifigure();
             obj.host(2,1)=uitabgroup(obj.host(1,1));
             obj.components=cell(obj.count,1);
+            temp=fieldnames(state.components);
             for i = 1:obj.count
-                switch lower(state{2,2}{i,1})
+                switch lower(state.components.(temp{i}).class)
                     case 'httab'
-                        obj.components{i,1} = HTTab(obj.host(2,1),obj.state{2,2}{i,2});
+                        obj.components{i,1} = HTTab(obj.host(2,1),obj.state.components.(temp{i}));
                     case 'htpanel'
-                        obj.components{i,1} = HTPanel(obj.host(1,1),obj.state{2,2}{i,2});
+                        obj.components{i,1} = HTPanel(obj.host(1,1),obj.state.components.(temp{i}));
                 end
-                obj.components{i,1}.SetProps(obj.state{2,2}{i,2}{1,2});
+                obj.components{i,1}.SetProps(obj.state.components.(temp{i}).properties);
             end
-            obj.SetLayout(1);
-            obj.SetProps(obj.state{1,2});
+            %obj.SetLayout(1);
+            obj.SetProps(obj.state.properties);
         end
         
         function obj=SetLayout(obj,framecount)
@@ -102,4 +103,3 @@ classdef HTGUI < HTComponent
         
     end
 end
-
